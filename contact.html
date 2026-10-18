@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="maison-logo.png">
+
+    <title>Contact — Maison</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+
+        <nav>
+
+    <a href="index.html">Maison</a>
+
+    <button class="menu-toggle" aria-label="Open navigation">
+        ☰
+    </button>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+</nav> 
+</header>
+
+
+    <main>
+
+        <section class="contact-page">
+
+            <div class="contact-heading">
+
+                <p>GET IN TOUCH</p>
+
+                <h1>Reserve your table.</h1>
+
+                <p>
+                    Planning a dinner, celebration, or special occasion?
+                    Send us your details and we'll get back to you.
+                </p>
+
+            </div>
+
+
+            <div class="contact-layout">
+
+                <div class="contact-info">
+
+                    <div>
+                        <h2>Visit Us</h2>
+                        <p>Airport Road, Lugbe, Abuja, Nigeria</p>
+                    </div>
+
+                    <div>
+                        <h2>Call Us</h2>
+                        <p>+234 7049642866</p>
+                    </div>
+
+                    <div>
+                        <h2>Email</h2>
+                        <p>Maison restaurant04@gmail.com</p>
+                    </div>
+
+                    <div>
+                        <h2>Opening Hours</h2>
+                        <p>Monday – Sunday</p>
+                        <p>10:00 AM – 10:00 PM</p>
+                    </div>
+
+                </div>
+
+
+                <form class="reservation-form">
+
+                    <label for="name">Your Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        required>
+
+
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        required>
+
+
+                    <div class="form-row">
+
+                        <div>
+                            <label for="date">Date</label>
+                            <input
+                                type="date"
+                                id="date"
+                                name="date"
+                                required>
+                        </div>
+
+                        <div>
+                            <label for="time">Time</label>
+                            <input
+                                type="time"
+                                id="time"
+                                name="time"
+                                required>
+                        </div>
+
+                    </div>
+
+
+                    <label for="guests">Number of Guests</label>
+
+                    <select id="guests" name="guests">
+
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4 Guests</option>
+                        <option value="5">5 Guests</option>
+                        <option value="6">6+ Guests</option>
+
+                    </select>
+
+
+                    <label for="message">Special Request</label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        placeholder="Tell us anything we should know..."></textarea>
+
+
+                    <button type="submit">
+                        Request Reservation
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>&copy; 2026 Maison Restaurant. All rights reserved.</p>
+
+    </footer>
+
+
+    <script src="scripts.js"></script>
+
+</body>
+
+</html>
