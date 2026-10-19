@@ -1,87 +1,40 @@
-// =========================
-// SUPABASE CONNECTION
-// =========================
+// ========================================
+// MAISON WEBSITE JAVASCRIPT
+// ========================================
+
+
+// ========================================
+// 1. SUPABASE CONNECTION
+// ========================================
 
 const supabaseUrl =
-    "https://gfbqyenjnuyiczxnelcb.supabase.co";
+    "https://mjufiszrixkrnwgmjhvc.supabase.co";
 
-    const supabaseKey =
-"sb_publishable_mkaqGJ06GsRgVkxYbqK8rw_jzuWvzBT";
+const supabaseKey =
+    "sb_publishable_60sY7Rpq8jfGxkExsVuaAg_yLn3A0Oc";
 
-console.log("Supabase library:", window.supabase);
+let supabaseClient = null;
 
-const supabaseClient = window.supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
+if (
+    window.supabase &&
+    typeof window.supabase.createClient === "function"
+) {
+    supabaseClient = window.supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+    );
 
-console.log("Maison Supabase connected");
-
-
-// =========================
-// RESERVATION FORM
-// =========================
-
-const reservationForm =
-    document.querySelector(".reservation-form");
-
-if (reservationForm) {
-
-    reservationForm.addEventListener("submit", function (event) {
-
-        event.preventDefault();
-
-        const name =
-            document.querySelector("#name").value.trim();
-
-        const email =
-            document.querySelector("#email").value.trim();
-
-        const date =
-            document.querySelector("#date").value;
-
-        const time =
-            document.querySelector("#time").value;
-
-        const guests =
-            document.querySelector("#guests").value;
-
-        const request =
-            document.querySelector("#message").value.trim();
-
-        if (!name || !email || !date || !time || !guests) {
-            alert("Please complete the required fields.");
-            return;
-        }
-
-        const message =
-            "Hello Maison! I would like to make a reservation.%0A%0A" +
-            "Name: " + encodeURIComponent(name) + "%0A" +
-            "Email: " + encodeURIComponent(email) + "%0A" +
-            "Date: " + encodeURIComponent(date) + "%0A" +
-            "Time: " + encodeURIComponent(time) + "%0A" +
-            "Guests: " + encodeURIComponent(guests) + "%0A" +
-            "Special Request: " +
-            encodeURIComponent(request || "None");
-
-        const whatsappNumber = "2347049642866";
-
-        window.open(
-            "https://wa.me/" +
-            whatsappNumber +
-            "?text=" +
-            message,
-            "_blank"
-        );
-
-    });
-
+    console.log("Maison Supabase connected.");
+} else {
+    console.error(
+        "Supabase library did not load. Check the CDN script."
+    );
 }
 
 
-// =========================
-// MOBILE NAVIGATION
-// =========================
+// ========================================
+// 2. MOBILE NAVIGATION
+// ========================================
 
 const menuToggle =
     document.querySelector(".menu-toggle");
@@ -95,14 +48,27 @@ if (menuToggle && navLinks) {
 
         navLinks.classList.toggle("active");
 
+        const isOpen =
+            navLinks.classList.contains("active");
+
+        menuToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close navigation" : "Open navigation"
+        );
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            String(isOpen)
+        );
+
     });
 
 }
 
 
-// =========================
-// PASSWORD VISIBILITY
-// =========================
+// ========================================
+// 3. PASSWORD VISIBILITY
+// ========================================
 
 const passwordToggles =
     document.querySelectorAll(".password-toggle");
@@ -137,261 +103,211 @@ passwordToggles.forEach(function (toggle) {
 
 });
 
-    // =========================
-    // NORMAL LOGIN
-    // =========================
 
-    if (passwordInput) {
+// ========================================
+// 4. CURRENT PAGE
+// ========================================
 
-        loginForm.addEventListener(
-            "submit",
-            async function (event) {
+const currentPage =
+    window.location.pathname
+        .split("/")
+        .pop()
+        .toLowerCase();
 
-                event.preventDefault();
 
-                const email =
-                    loginForm
-                        .querySelector("#email")
-                        .value
-                        .trim();
+// ========================================
+// 5. HOMEPAGE LOGIN PROTECTION
+// ========================================
 
-                const password =
-                    passwordInput.value;
+async function protectHomepage() {
 
-                if (!email || !password) {
-                    alert("Please enter your email and password.");
-                    return;
-                }
+    const isHomepage =
+        currentPage === "" ||
+        currentPage === "index.html";
 
-                const { data, error } =
-                    await supabaseClient.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-
-                if (error) {
-
-                    alert(
-                        "LOGIN ERROR: " +
-                        error.message
-                    );
-
-                    console.error(
-                        "LOGIN ERROR:",
-                        error
-                    );
-
-                    return;
-                }
-
-                console.log("Login successful:", data);
-
-                alert("Login successful.");
-
-                window.location.href = "index.html";
-
-            }
-        );
-
+    if (!isHomepage) {
+        return;
     }
 
-
-    // =========================
-    // FORGOT PASSWORD
-    // =========================
-
-    else {
-
-        loginForm.addEventListener(
-            "submit",
-            async function (event) {
-
-                event.preventDefault();
-
-                const email =
-                    loginForm
-                        .querySelector("#email")
-                        .value
-                        .trim();
-
-                if (!email) {
-
-                    alert(
-                        "Please enter your email address."
-                    );
-
-                    return;
-                }
-
-                const resetUrl =
-                    window.location.origin +
-                    "/Restaurant-Website/reset-password.html";
-
-                console.log(
-                    "Password reset URL:",
-                    resetUrl
-                );
-
-                const { error } =
-                    await supabaseClient.auth.resetPasswordForEmail(
-                        email,
-                        {
-                            redirectTo: resetUrl
-                        }
-                    );
-
-                if (error) {
-
-                    alert(
-                        "SUPABASE ERROR: " +
-                        error.message
-                    );
-
-                    console.error(
-                        "SUPABASE ERROR:",
-                        error
-                    );
-
-                    return;
-                }
-
-                alert(
-                    "Reset link sent successfully to " +
-                    email
-                );
-
-            }
+    if (!supabaseClient) {
+        console.error(
+            "Cannot verify login: Supabase is unavailable."
         );
 
+        return;
     }
 
+    try {
 
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
 
-
-// =========================
-// RESET PASSWORD
-// =========================
-
-const resetPasswordForm =
-    document.querySelector(".reset-password-form");
-
-if (resetPasswordForm) {
-
-    let recoverySessionReady = false;
-
-
-    // Listen for the recovery session
-    supabaseClient.auth.onAuthStateChange(
-        function (event, session) {
-
-            console.log(
-                "AUTH EVENT:",
-                event
+        if (error) {
+            console.error(
+                "Session check failed:",
+                error.message
             );
 
-            if (
-                event === "PASSWORD_RECOVERY" &&
-                session
-            ) {
+            return;
+        }
 
-                recoverySessionReady = true;
+        if (!data.session) {
 
-                console.log(
-                    "Password recovery session ready."
-                );
-
-            }
+            window.location.replace("login.html");
 
         }
+
+    } catch (error) {
+
+        console.error(
+            "Homepage authentication failed:",
+            error
+        );
+
+    }
+
+}
+
+protectHomepage();
+
+
+// ========================================
+// 6. NORMAL LOGIN
+// ========================================
+
+const loginForm =
+    document.querySelector(
+        "form.login-form:not(.signup-form)"
     );
 
+if (
+    loginForm &&
+    currentPage === "login.html"
+) {
 
-    resetPasswordForm.addEventListener(
+    loginForm.addEventListener(
         "submit",
         async function (event) {
 
             event.preventDefault();
 
-            const newPassword =
-                document
-                    .querySelector("#new-password")
-                    .value;
-
-            const confirmPassword =
-                document
-                    .querySelector("#confirm-password")
-                    .value;
-
-
-            if (newPassword !== confirmPassword) {
-
-                alert("Passwords do not match.");
-                return;
-
-            }
-
-
-            if (newPassword.length < 6) {
+            if (!supabaseClient) {
 
                 alert(
-                    "Password must be at least 6 characters."
+                    "Connection error. Please refresh the page and try again."
                 );
 
                 return;
-
             }
 
+            const emailInput =
+                loginForm.querySelector("#email");
 
-            const {
-                data: sessionData
-            } =
-                await supabaseClient.auth.getSession();
+            const passwordInput =
+                loginForm.querySelector("#password");
 
-
-            if (
-                !sessionData ||
-                !sessionData.session
-            ) {
-
-                alert(
-                    "Auth session is missing. " +
-                    "Please open the newest reset link from your email again."
-                );
-
-                return;
-
-            }
-
-
-            const { error } =
-                await supabaseClient.auth.updateUser({
-                    password: newPassword
-                });
-
-
-            if (error) {
-
-                alert(
-                    "PASSWORD RESET ERROR: " +
-                    error.message
-                );
+            if (!emailInput || !passwordInput) {
 
                 console.error(
-                    "PASSWORD RESET ERROR:",
+                    "Login email or password field is missing."
+                );
+
+                alert(
+                    "Login form error. Please contact support."
+                );
+
+                return;
+            }
+
+            const email =
+                emailInput.value.trim();
+
+            const password =
+                passwordInput.value;
+
+            if (!email || !password) {
+
+                alert(
+                    "Please enter your email and password."
+                );
+
+                return;
+            }
+
+            const submitButton =
+                loginForm.querySelector(
+                    'button[type="submit"]'
+                );
+
+            try {
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = "Signing in...";
+                }
+
+                const {
+    data,
+    error
+} = await supabaseClient.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+        emailRedirectTo:
+            "http://localhost:7700/Restaurant-Website/index.html"
+    }
+});
+
+                if (error) {
+
+                    console.error(
+                        "Login error:",
+                        error.message
+                    );
+
+                    alert(
+                        "LOGIN ERROR: " + error.message
+                    );
+
+                    return;
+                }
+
+                if (!data.session) {
+
+                    alert(
+                        "Login could not be completed. Please try again."
+                    );
+
+                    return;
+                }
+
+                console.log("Maison login successful.");
+
+                window.location.replace("index.html");
+
+            } catch (error) {
+
+                console.error(
+                    "Unexpected login error:",
                     error
                 );
 
-                return;
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+            } finally {
+
+                if (submitButton) {
+
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Sign In";
+
+                }
 
             }
-
-
-            alert(
-                "Password updated successfully."
-            );
-
-            window.location.href =
-                "login.html";
 
         }
     );
@@ -399,9 +315,9 @@ if (resetPasswordForm) {
 }
 
 
-// =========================
-// SIGN UP
-// =========================
+// ========================================
+// 7. SIGNUP
+// ========================================
 
 const signupForm =
     document.querySelector(".signup-form");
@@ -414,79 +330,141 @@ if (signupForm) {
 
             event.preventDefault();
 
+            if (!supabaseClient) {
+
+                alert(
+                    "Connection error. Please refresh and try again."
+                );
+
+                return;
+            }
+
+            const emailInput =
+                signupForm.querySelector("#email");
+
+            const passwordInput =
+                signupForm.querySelector("#password");
+
+            const confirmPasswordInput =
+                signupForm.querySelector("#confirm-password");
+
+            if (
+                !emailInput ||
+                !passwordInput ||
+                !confirmPasswordInput
+            ) {
+
+                console.error(
+                    "Signup form fields are missing."
+                );
+
+                alert(
+                    "Signup form error. Please check the form."
+                );
+
+                return;
+            }
+
             const email =
-                signupForm
-                    .querySelector("#email")
-                    .value
-                    .trim();
+                emailInput.value.trim();
 
             const password =
-                signupForm
-                    .querySelector("#password")
-                    .value;
+                passwordInput.value;
 
             const confirmPassword =
-                signupForm
-                    .querySelector("#confirm-password")
-                    .value;
-
+                confirmPasswordInput.value;
 
             if (password !== confirmPassword) {
 
-                alert("Passwords do not match.");
+                alert(
+                    "Your passwords do not match."
+                );
+
                 return;
-
             }
-
 
             if (password.length < 6) {
 
                 alert(
-                    "Password must be at least 6 characters."
+                    "Your password must contain at least 6 characters."
                 );
 
                 return;
-
             }
 
+            const submitButton =
+                signupForm.querySelector(
+                    'button[type="submit"]'
+                );
 
-            const { data, error } =
-                await supabaseClient.auth.signUp({
+            try {
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = "Creating account...";
+                }
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password
                 });
 
+                if (error) {
 
-            if (error) {
+                    alert(
+                        "SIGNUP ERROR: " + error.message
+                    );
 
-                alert(
-                    "SUPABASE ERROR: " +
-                    error.message
-                );
+                    console.error(
+                        "Signup error:",
+                        error
+                    );
+
+                    return;
+                }
+
+                if (data.session) {
+
+                    alert(
+                        "Your account has been created successfully."
+                    );
+
+                    window.location.replace("index.html");
+
+                } else {
+
+                    alert(
+                        "Your account has been created. Check your email to verify your account before signing in."
+                    );
+
+                    window.location.replace("login.html");
+
+                }
+
+            } catch (error) {
 
                 console.error(
-                    "SUPABASE ERROR:",
+                    "Unexpected signup error:",
                     error
                 );
 
-                return;
+                alert(
+                    "Something went wrong during signup."
+                );
+
+            } finally {
+
+                if (submitButton) {
+
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Create Account";
+
+                }
 
             }
-
-
-            console.log(
-                "Signup successful:",
-                data
-            );
-
-
-            alert(
-                "Account created successfully."
-            );
-
-
-            window.location.href =
-                "index.html";
 
         }
     );
@@ -494,41 +472,287 @@ if (signupForm) {
 }
 
 
-// =========================
-// HOMEPAGE LOGIN CHECK
-// =========================
+// ========================================
+// 8. FORGOT PASSWORD
+// ========================================
 
-const currentPath =
-    window.location.pathname;
+if (currentPage === "forgot-password.html") {
 
-const isHomepage =
-    currentPath.endsWith("/index.html") ||
-    currentPath === "/" ||
-    currentPath === "";
+    const forgotPasswordForm =
+        document.querySelector("form.login-form");
 
+    if (forgotPasswordForm) {
 
-if (isHomepage) {
+        forgotPasswordForm.addEventListener(
+            "submit",
+            async function (event) {
 
-    supabaseClient.auth.getSession().then(
-        function ({ data, error }) {
+                event.preventDefault();
 
-            if (error) {
+                if (!supabaseClient) {
 
-                console.error(
-                    "SESSION ERROR:",
-                    error
-                );
+                    alert(
+                        "Connection error. Please try again."
+                    );
 
-                return;
+                    return;
+                }
+
+                const emailInput =
+                    forgotPasswordForm.querySelector("#email");
+
+                if (!emailInput) {
+
+                    alert(
+                        "Email field not found."
+                    );
+
+                    return;
+                }
+
+                const email =
+                    emailInput.value.trim();
+
+                if (!email) {
+
+                    alert(
+                        "Enter your email address."
+                    );
+
+                    return;
+                }
+
+                const submitButton =
+                    forgotPasswordForm.querySelector(
+                        'button[type="submit"]'
+                    );
+
+                try {
+
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    const resetUrl =
+                        new URL(
+                            "reset-password.html",
+                            window.location.href
+                        ).href;
+
+                    const {
+                        error
+                    } = await supabaseClient.auth
+                        .resetPasswordForEmail(email, {
+                            redirectTo: resetUrl
+                        });
+
+                    if (error) {
+
+                        alert(
+                            "PASSWORD RESET ERROR: " +
+                            error.message
+                        );
+
+                        console.error(
+                            "Password reset error:",
+                            error
+                        );
+
+                        return;
+                    }
+
+                    alert(
+                        "If the address is registered, a password-reset email will be sent. Check your inbox."
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Unexpected password reset error:",
+                        error
+                    );
+
+                    alert(
+                        "Unable to request a password reset. Please try again."
+                    );
+
+                } finally {
+
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+
+                }
+
             }
+        );
+
+    }
+
+}
 
 
-            if (!data.session) {
+// ========================================
+// 9. RESET PASSWORD
+// ========================================
 
-                window.location.href =
-                    "login.html";
+if (currentPage === "reset-password.html") {
+
+    const resetForm =
+        document.querySelector(
+            "#reset-password-form, .reset-password-form"
+        );
+
+    if (resetForm) {
+
+        resetForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+                if (!supabaseClient) {
+
+                    alert(
+                        "Connection error. Please try again."
+                    );
+
+                    return;
+                }
+
+                const passwordInput =
+                    resetForm.querySelector("#password");
+
+                const confirmPasswordInput =
+                    resetForm.querySelector("#confirm-password");
+
+                if (
+                    !passwordInput ||
+                    !confirmPasswordInput
+                ) {
+
+                    alert(
+                        "The password fields could not be found."
+                    );
+
+                    return;
+                }
+
+                const password =
+                    passwordInput.value;
+
+                const confirmPassword =
+                    confirmPasswordInput.value;
+
+                if (password.length < 6) {
+
+                    alert(
+                        "Your password must contain at least 6 characters."
+                    );
+
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+
+                    alert(
+                        "Your passwords do not match."
+                    );
+
+                    return;
+                }
+
+                const submitButton =
+                    resetForm.querySelector(
+                        'button[type="submit"]'
+                    );
+
+                try {
+
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    const {
+                        data: {
+                            session
+                        },
+                        error: sessionError
+                    } = await supabaseClient.auth.getSession();
+
+                    if (sessionError || !session) {
+
+                        alert(
+                            "Your reset link may have expired. Request a new password-reset email."
+                        );
+
+                        return;
+                    }
+
+                    const {
+                        error
+                    } = await supabaseClient.auth.updateUser({
+                        password: password
+                    });
+
+                    if (error) {
+
+                        alert(
+                            "PASSWORD UPDATE ERROR: " +
+                            error.message
+                        );
+
+                        return;
+                    }
+
+                    alert(
+                        "Your password has been updated. You can now sign in."
+                    );
+
+                    await supabaseClient.auth.signOut();
+
+                    window.location.replace("login.html");
+
+                } catch (error) {
+
+                    console.error(
+                        "Unexpected password update error:",
+                        error
+                    );
+
+                    alert(
+                        "Unable to update your password. Please try again."
+                    );
+
+                } finally {
+
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+
+                }
 
             }
+        );
+
+    }
+
+}
+
+
+// ========================================
+// 10. AUTHENTICATION STATE LOGGING
+// ========================================
+
+if (supabaseClient) {
+
+    supabaseClient.auth.onAuthStateChange(
+        function (event) {
+
+            console.log(
+                "Maison authentication event:",
+                event
+            );
 
         }
     );
