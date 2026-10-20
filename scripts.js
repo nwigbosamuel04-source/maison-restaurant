@@ -256,8 +256,7 @@ if (
     password: password,
     options: {
         emailRedirectTo:
-            "http://localhost:7700/Restaurant-Website/index.html"
-    }
+            "https://nwigbosamuel04-source.github.io/maison-restaurant/index.html"
 });
 
                 if (error) {
